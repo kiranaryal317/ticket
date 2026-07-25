@@ -36,6 +36,8 @@ class TicketTest extends TestCase
 
     public function test_user_can_create_ticket(): void
     {
+        \Illuminate\Support\Facades\Notification::fake();
+
         $response = $this->actingAs($this->user, 'sanctum')
             ->postJson('/api/tickets', [
                 'subject' => 'Issue with login',
@@ -52,6 +54,11 @@ class TicketTest extends TestCase
             'subject' => 'Issue with login',
             'user_id' => $this->user->id,
         ]);
+
+        \Illuminate\Support\Facades\Notification::assertSentTo(
+            $this->admin,
+            \App\Notifications\TicketCreated::class
+        );
     }
 
     public function test_user_can_only_see_own_tickets(): void

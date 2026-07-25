@@ -8,6 +8,10 @@ use App\Http\Requests\Ticket\StoreTicketRequest;
 use App\Http\Requests\Ticket\UpdateStatusRequest;
 use App\Http\Resources\TicketResource;
 use App\Models\Ticket;
+use App\Models\User;
+use App\Notifications\TicketAssigned;
+use App\Notifications\TicketCreated;
+use App\Notifications\TicketStatusChanged;
 use Illuminate\Http\Request;
 
 class TicketController extends Controller
@@ -44,6 +48,11 @@ class TicketController extends Controller
             'status' => 'Open',
         ]);
 
+        // notify every Admin (no one's assigned yet at creation time)
+        User::role('Admin')->get()->each(
+            fn ($admin) => $admin->notify(new TicketCreated($ticket))
+        );
+
         return new TicketResource($ticket);
     }
 
@@ -64,16 +73,20 @@ class TicketController extends Controller
     {
         $ticket->update(['status' => $request->status]);
 
+        $ticket->creator->notify(new TicketStatusChanged($ticket));
+
         return new TicketResource($ticket);
     }
 
     public function assign(AssignTicketRequest $request, Ticket $ticket)
     {
-        $staff = \App\Models\User::findOrFail($request->assigned_to);
+        $staff = User::findOrFail($request->assigned_to);
 
         abort_unless($staff->hasRole('Staff'), 422, 'User must have the Staff role.');
 
         $ticket->update(['assigned_to' => $staff->id]);
+
+        $staff->notify(new TicketAssigned($ticket));
 
         return new TicketResource($ticket);
     }
