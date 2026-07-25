@@ -1,0 +1,26 @@
+<?php
+
+namespace App;
+
+use OpenApi\Attributes as OA;
+
+#[OA\Info(
+    version: '1.0.0',
+    title: 'Ticket Management API Documentation',
+    description: 'API documentation for User Authentication, Role Management, Ticket CRUD, and Ticket Comments.',
+    contact: new OA\Contact(email: 'admin@example.com')
+)]
+#[OA\Server(
+    url: 'http://localhost:2000',
+    description: 'API Server'
+)]
+#[OA\SecurityScheme(
+    securityScheme: 'bearerAuth',
+    type: 'http',
+    scheme: 'bearer',
+    bearerFormat: 'JWT',
+    description: 'Enter Sanctum bearer token in format: Bearer {token}'
+)]
+class OpenAPI
+{
+}

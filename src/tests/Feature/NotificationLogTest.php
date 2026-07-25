@@ -47,6 +47,7 @@ class NotificationLogTest extends TestCase
     public function test_ticket_created_notification_is_queued_and_logged(): void
     {
         config(['mail.default' => 'log']);
+        File::put($this->logPath, '');
 
         $response = $this->actingAs($this->user, 'sanctum')
             ->postJson('/api/tickets', [
@@ -70,7 +71,10 @@ class NotificationLogTest extends TestCase
         $ticket = Ticket::factory()->create([
             'user_id' => $this->user->id,
             'status' => 'Open',
+            'subject' => 'Subject Status Change Test',
         ]);
+
+        File::put($this->logPath, '');
 
         $response = $this->actingAs($this->staff, 'sanctum')
             ->patchJson("/api/tickets/{$ticket->id}/status", [
@@ -89,7 +93,11 @@ class NotificationLogTest extends TestCase
     {
         config(['mail.default' => 'log']);
 
-        $ticket = Ticket::factory()->create();
+        $ticket = Ticket::factory()->create([
+            'subject' => 'Subject Assign Test',
+        ]);
+
+        File::put($this->logPath, '');
 
         $response = $this->actingAs($this->admin, 'sanctum')
             ->patchJson("/api/tickets/{$ticket->id}/assign", [
