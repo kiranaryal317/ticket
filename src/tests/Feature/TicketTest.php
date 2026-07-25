@@ -163,6 +163,18 @@ class TicketTest extends TestCase
         ]);
     }
 
+    public function test_cannot_assign_ticket_to_non_staff_user(): void
+    {
+        $ticket = Ticket::factory()->create();
+
+        $response = $this->actingAs($this->admin, 'sanctum')
+            ->patchJson("/api/tickets/{$ticket->id}/assign", [
+                'assigned_to' => $this->user->id,
+            ]);
+
+        $response->assertStatus(422);
+    }
+
     public function test_non_admin_cannot_assign_ticket(): void
     {
         $ticket = Ticket::factory()->create();
