@@ -1,0 +1,49 @@
+version: "3.9"
+  
+services:
+  app:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: ticket-app
+    environment:
+      APP_UID: ${UID:-1000}
+      APP_GID: ${GID:-1000}
+    volumes:
+      - ./src:/var/www/src
+    ports:
+      - "2000:8000"
+    depends_on:
+      - db
+
+  db:
+    image: mysql:8.4
+    container_name: ticket-db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ticket
+      MYSQL_USER: user
+      MYSQL_PASSWORD: secret
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "2002:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: phpmyadmin
+    restart: unless-stopped
+    ports:
+      - "2001:80"
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      PMA_USER: root
+      PMA_PASSWORD: root
+    depends_on:
+      - db
+
+
+volumes:
+  db_data:
