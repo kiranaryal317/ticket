@@ -69,7 +69,11 @@ class TicketController extends Controller
 
     public function assign(AssignTicketRequest $request, Ticket $ticket)
     {
-        $ticket->update(['assigned_to' => $request->assigned_to]);
+        $staff = \App\Models\User::findOrFail($request->assigned_to);
+
+        abort_unless($staff->hasRole('Staff'), 422, 'User must have the Staff role.');
+
+        $ticket->update(['assigned_to' => $staff->id]);
 
         return new TicketResource($ticket);
     }

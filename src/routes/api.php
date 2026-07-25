@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\TicketController;
+use App\Http\Controllers\Api\CommentController;
+
 
 
 
@@ -34,3 +36,6 @@ Route::middleware('role:Staff|Admin')->group(function () {
 Route::middleware('role:Admin')->group(function () {
     Route::patch('/tickets/{ticket}/assign', [TicketController::class, 'assign']);
 });
+
+Route::get('/tickets/{ticket}/comments', [CommentController::class, 'index']);
+Route::post('/tickets/{ticket}/comments', [CommentController::class, 'store']);
