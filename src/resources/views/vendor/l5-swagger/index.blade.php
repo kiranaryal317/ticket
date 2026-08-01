@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>{{ $documentationTitle }}</title>
-    <link rel="stylesheet" type="text/css" href="{{ l5_swagger_asset($documentation, 'swagger-ui.css') }}&cb=1">
+    <link rel="stylesheet" type="text/css" href="{{ l5_swagger_asset($documentation, 'swagger-ui.css') }}&v={{ time() }}">
     <link rel="icon" type="image/png" href="{{ l5_swagger_asset($documentation, 'favicon-32x32.png') }}" sizes="32x32"/>
     <link rel="icon" type="image/png" href="{{ l5_swagger_asset($documentation, 'favicon-16x16.png') }}" sizes="16x16"/>
     <style>
@@ -119,8 +119,8 @@
 <body @if(config('l5-swagger.defaults.ui.display.dark_mode')) id="dark-mode" @endif>
 <div id="swagger-ui"></div>
 
-<script src="{{ l5_swagger_asset($documentation, 'swagger-ui-bundle.js') }}&cb=1"></script>
-<script src="{{ l5_swagger_asset($documentation, 'swagger-ui-standalone-preset.js') }}&cb=1"></script>
+<script src="{{ l5_swagger_asset($documentation, 'swagger-ui-bundle.js') }}&v={{ time() }}"></script>
+<script src="{{ l5_swagger_asset($documentation, 'swagger-ui-standalone-preset.js') }}&v={{ time() }}"></script>
 <script>
     window.onload = function() {
         const urls = [];
