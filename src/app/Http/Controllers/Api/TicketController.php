@@ -284,7 +284,7 @@ class TicketController extends Controller
         try {
             $staff = User::findOrFail($request->assigned_to);
 
-            abort_unless($staff->hasRole('Staff'), 422, 'User must have the Staff role.');
+            abort_unless($staff->hasRole('Staff') || $staff->hasRole('Admin'), 422, 'User must have the Staff or Admin role.');
 
             $ticket->update(['assigned_to' => $staff->id]);
 
